@@ -1,78 +1,112 @@
 import csv
 import random
+import time
+
+servidores = [
+    {"instancia":"instancia_01","microservico":"microservico_01"},
+    {"instancia":"instancia_01","microservico":"microservico_02"},
+    {"instancia":"instancia_02","microservico":"microservico_03"},
+    {"instancia":"instancia_02","microservico":"microservico_04"},
+    {"instancia":"instancia_03","microservico":"microservico_05"},
+    {"instancia":"instancia_03","microservico":"microservico_06"}
+]
 
 def capture():
     disco_inicial = 200.0
-    nome_instancia = "instancia1"
-    nome_microservico = "microservico1"
 
-    with open('yearly-data.csv', 'r', encoding='utf-8') as arquivo_lido:
-        lido = csv.DictReader(arquivo_lido, delimiter=';')
-        dia = 1
-        for i in lido:
-            
-            hora_aleatoria = random.randint(0,23)
-            minuto_aleatorio = random.randint(0,59)
-            segundo_aleatorio = random.randint(0,59)
-            data_hora = f"{i['date']} {hora_aleatoria}:{minuto_aleatorio}:{segundo_aleatorio}"
+    with open("simulacao_ano.csv", 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile, delimiter=';')
+        writer.writerow([
+            'nome_instancia',
+            'nome_microservico',
+            'porcentagem_cpu',
+            'frequencia_cpu',
+            'porcentagem_ram',
+            'porcentagem_mem_swap',
+            'qtd_processos',
+            'qtd_zumbis',
+            'velocidade_upload',
+            'velocidade_download',
+            'disco',
+            'data_hora',
+        ])
+    for j in servidores:
 
-            multiplicador = float(i['infra_multiplicator'])
+        nome_instancia = j["instancia"]
+        nome_microservico = j["microservico"]
 
-            esforco = (multiplicador - (-2.0)) / 4
-            if(esforco > 1.0):
-                esforco = 1.0
-            elif(esforco < 0.0):
-                esforco = 0.0
+        with open('yearly-data.csv', 'r', encoding='utf-8') as arquivo_lido:
+            lido = csv.DictReader(arquivo_lido, delimiter=';')
+            dia = 1
 
-            porcentagem_cpu = round(10.0 + (esforco * 80.0), 2)
-            if(porcentagem_cpu > 99.0):
-                porcentagem_cpu = 99.0
+            for i in lido:
+                hora_aleatoria = random.randint(0,23)
+                minuto_aleatorio = random.randint(0,59)
+                segundo_aleatorio = random.randint(0,59)
+                data_hora = f"{i['date']} {hora_aleatoria}:{minuto_aleatorio}:{segundo_aleatorio}"
+
+                multiplicador = float(i['infra_multiplicator'])
+
+                esforco = (multiplicador - (-2.0)) / 4
+                if(esforco > 1.0):
+                    esforco = 1.0
+                elif(esforco < 0.0):
+                    esforco = 0.0
+
+                variacao = random.randint(-2,2)
+
+                porcentagem_cpu = round((10.0 + (esforco * 80.0)) + variacao, 2)
+                if(porcentagem_cpu > 99.0):
+                    porcentagem_cpu = 99.0
         
-            frequencia_cpu = round(1.8 + (esforco * 2.0), 2)
-            if(frequencia_cpu > 3.8):
-                frequencia_cpu = 3.8
+                frequencia_cpu = round((1.8 + (esforco * 2.0)) + variacao, 2)
+                if(frequencia_cpu < 1.8):
+                    frequencia_cpu = 1.8
      
-            porcentagem_ram = round(30 + (esforco * 60), 2)
-            if(porcentagem_ram > 90):
-                porcentagem_ram = 90
+                porcentagem_ram = round((30 + (esforco * 60)) + variacao, 2)
+                if(porcentagem_ram > 90):
+                    porcentagem_ram = 90
+                if(porcentagem_ram < 30):
+                    porcentagem_ram = 30
 
-            porcentagem_mem_swap = round((esforco**2) * 35.0, 2)
+                porcentagem_mem_swap = round(((esforco**2) * 35.0) + variacao, 2)
 
-            qtd_processos = int(220 + (esforco * 180))
+                qtd_processos = ((220 + (esforco * 180))+variacao)
 
-            if(esforco >= 0.6):
-                qtd_zumbis = random.choice([0, 0, 1])
-            else:
-                qtd_zumbis = 0
+                if(esforco >= 0.6):
+                    qtd_zumbis = random.choice([0, 0, 1])
+                else:
+                    qtd_zumbis = 0
 
-            velocidade_upload = round(0.5 + esforco*45, 2)
-            if(velocidade_upload < 0.5):
-               velocidade_upload = 0.5
+                velocidade_upload = round((0.5 + esforco*45)+variacao, 2)
+                if(velocidade_upload < 0.5):
+                    velocidade_upload = 0.5
 
-            velocidade_download = round(1.0 + esforco*200, 2)
-            if(velocidade_download < 1.0):
-               velocidade_download = 1.0
+                velocidade_download = round((1.0 + esforco*200)+variacao, 2)
+                if(velocidade_download < 1.0):
+                    velocidade_download = 1.0
 
-            disco = round((disco_inicial - (dia * 0.15)) - (esforco * 2.0), 2)
-            dia+=1
+                disco = round((disco_inicial - (dia * 0.15)) - (esforco * 2.0), 2)
+                dia+=1
       
-            dados_dia = [
-                nome_instancia,
-                nome_microservico,
-                porcentagem_cpu,
-                frequencia_cpu,
-                porcentagem_ram,
-                porcentagem_mem_swap,
-                qtd_processos,
-                qtd_zumbis,
-                velocidade_upload,
-                velocidade_download,
-                disco,
-                data_hora
-                ]
+                dados_dia = [
+                    nome_instancia,
+                    nome_microservico,
+                    porcentagem_cpu,
+                    frequencia_cpu,
+                    porcentagem_ram,
+                    porcentagem_mem_swap,
+                    qtd_processos,
+                    qtd_zumbis,
+                    velocidade_upload,
+                    velocidade_download,
+                    disco,
+                    data_hora
+                    ]
 
-            exhibit(dados_dia)
-            store(dados_dia)
+                exhibit(dados_dia)
+                time.sleep(1)
+                store(dados_dia)
         
 
 
@@ -111,23 +145,5 @@ def store(data):
   with open("simulacao_ano.csv", 'a', newline='') as csvfile:
     writer = csv.writer(csvfile, delimiter=';')
     writer.writerow([data[0],data[1],data[2],data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10],data[11]])
-
-with open("simulacao_ano.csv", 'w', newline='') as csvfile:
-    writer = csv.writer(csvfile, delimiter=';')
-    writer.writerow([
-        'nome_instancia',
-        'nome_microservico',
-        'porcentagem_cpu',
-        'frequencia_cpu',
-        'porcentagem_ram',
-        'porcentagem_mem_swap',
-        'qtd_processos',
-        'qtd_zumbis',
-        'velocidade_upload',
-        'velocidade_download',
-        'disco',
-        'data_hora',
-    ])
-
 
 capture()
