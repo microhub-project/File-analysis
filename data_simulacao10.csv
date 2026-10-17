@@ -1,4 +1,4 @@
-instancia;microservico;cpu_percent;cpu_frequency;ram_percent;swap_memory_percent;processes_qtd;processes_zombies_percent;upload_speed;download_speed;disk;timestamp
+instancia;microsservico;cpu_percent;cpu_frequency;ram_percent;swap_memory_percent;processes_qtd;processes_zombies_percent;upload_speed;download_speed;disk;timestamp
 10_instancia;19_microservico;10.9;2.8;90.06;12.12;226;0.51;10.94;16.31;424.35;11/10/2026 08:00:00
 10_instancia;19_microservico;16.04;3.35;55.15;4.59;221;0.89;3.39;9.61;230.56;11/10/2026 08:05:00
 10_instancia;19_microservico;45.1;3.16;81.76;1.48;174;0.87;5.57;15.03;355.74;11/10/2026 08:10:00
