@@ -14,7 +14,7 @@ servidores = [
 def capture():
     disco_inicial = 200.0
 
-    with open("simulacao_ano.csv", 'w', newline='') as csvfile:
+    with open("simulacao_ano_v2.csv", 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=';')
         writer.writerow([
             'nome_instancia',
@@ -29,6 +29,7 @@ def capture():
             'velocidade_download',
             'disco',
             'data_hora',
+            'valor_estimado'
         ])
     for j in servidores:
 
@@ -53,17 +54,17 @@ def capture():
                 elif(esforco < 0.0):
                     esforco = 0.0
 
-                variacao = random.randint(-2,2)
+                variacao = random.uniform(-2.0,2.0)
 
-                porcentagem_cpu = round((10.0 + (esforco * 80.0)) + variacao, 2)
+                porcentagem_cpu = round((10.0 + (esforco * 80.0)) + variacao + round(random.uniform(14.3, 7.7),1), 2)
                 if(porcentagem_cpu > 99.0):
                     porcentagem_cpu = 99.0
         
-                frequencia_cpu = round((1.8 + (esforco * 2.0)) + variacao, 2)
+                frequencia_cpu = round((1.8 + (esforco * 2.0)) + variacao +round(random.uniform(2.2,-1.9),1), 2)
                 if(frequencia_cpu < 1.8):
                     frequencia_cpu = 1.8
      
-                porcentagem_ram = round((30 + (esforco * 60)) + variacao, 2)
+                porcentagem_ram = round((30 + (esforco * 60)) + variacao + round(random.uniform(17,12),1), 2)
                 if(porcentagem_ram > 90):
                     porcentagem_ram = 90
                 if(porcentagem_ram < 30):
@@ -71,18 +72,20 @@ def capture():
 
                 porcentagem_mem_swap = round(((esforco**2) * 35.0) + variacao, 2)
 
-                qtd_processos = ((220 + (esforco * 180))+variacao)
+                qtd_processos = ((220 + (esforco * 180))+variacao) + random.randint(-30, -10)
 
                 if(esforco >= 0.6):
                     qtd_zumbis = random.choice([0, 0, 1])
                 else:
                     qtd_zumbis = 0
 
-                velocidade_upload = round((0.5 + esforco*45)+variacao, 2)
+                velocidade_upload = round(((0.5 + esforco*45)+ variacao + (random.uniform(-3,-13.1))), 2)
                 if(velocidade_upload < 0.5):
                     velocidade_upload = 0.5
 
-                velocidade_download = round((1.0 + esforco*200)+variacao, 2)
+                valor = round((7.0 + (61.0 * esforco)), 2)
+
+                velocidade_download = round((1.0 + esforco*200)+ variacao + random.uniform(1.6,-4.2), 2)
                 if(velocidade_download < 1.0):
                     velocidade_download = 1.0
 
@@ -101,12 +104,13 @@ def capture():
                     velocidade_upload,
                     velocidade_download,
                     disco,
-                    data_hora
+                    data_hora,
+                    valor
                     ]
 
                 exhibit(dados_dia)
-                time.sleep(1)
                 store(dados_dia)
+                time.sleep(1)
         
 
 
@@ -118,11 +122,12 @@ def exhibit(data):
   line_ram_percent = f'Uso atual de memória RAM: {data[4]}%'
   line_swap_memory_percent = f'Uso atual da memória swap: {data[5]}%'
   line_processes_qtd = f'Quantidade atual de processos ativos: {data[6]}'
-  line_zombie = f'Quantidade de processos zumbis: {data[7]}%'
+  line_zombie = f'Quantidade de processos zumbis: {data[7]}'
   line_upload_bytes = f'Tráfego atual de upload de bytes da rede: {data[8]} Mbps'
   line_download_bytes = f'Tráfego atual de download de bytes da rede: {data[9]} Mbps'
   line_disk = f'Espaço livre em disco: {data[10]} GiB'
   line_timestamp = f'Momento de captura: {data[11]}'
+  line_value_month = f'Média estipulada no mês: {data[12]}'
 
   print(f"""
     ----------------------------------------------------------------
@@ -138,12 +143,13 @@ def exhibit(data):
     | {line_download_bytes:<60} |
     | {line_disk:<60} |
     | {line_timestamp:<60} |
+    | {line_value_month:<60} |
     ----------------------------------------------------------------
     """)
 
 def store(data):
-  with open("simulacao_ano.csv", 'a', newline='') as csvfile:
+  with open("simulacao_ano_v2.csv", 'a', newline='') as csvfile:
     writer = csv.writer(csvfile, delimiter=';')
-    writer.writerow([data[0],data[1],data[2],data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10],data[11]])
+    writer.writerow([data[0],data[1],data[2],data[3], data[4], data[5], data[6], data[7], data[8], data[9], data[10],data[11],data[12]])
 
 capture()
